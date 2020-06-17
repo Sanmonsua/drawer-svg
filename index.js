@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () =>{
   function render() {
     svg = d3.select('#canvas')
                 .attr('height', window.innerHeight)
-                .attr('width', window.innerWidth);
+                .attr('width', window.innerWidth)
+                .attr('border', 1)
+                ;
 
     svg.on('mouseup', () =>{
       drawing = false;
