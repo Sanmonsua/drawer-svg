@@ -1,69 +1,71 @@
-document.addEventListener('DOMContentLoaded', () =>{
-  let drawing = false;
-  let points = [];
-  let lines = [];
-  let svg = null;
+document.addEventListener('DOMContentLoaded', function onDocumentLoaded() {
+	var drawing = false,
+		points = [],
+		lines = [],
+		svg = null
 
-  function render() {
-    svg = d3.select('#canvas')
-                .attr('height', window.innerHeight)
-                .attr('width', window.innerWidth)
-                .attr('border', 1)
-                ;
+	function render() {
+		svg = d3
+			.select('#canvas')
+			.attr('height', window.innerHeight)
+			.attr('width', window.innerWidth)
+			.attr('border', 1)
 
-    svg.on('mouseup', () =>{
-      drawing = false;
-    });
+		svg.on('mouseup', function mouseUp() {
+			drawing = false
+		})
 
-    svg.on('mousedown', function (){
-      drawing = true;
-      const coord = d3.mouse(this);
-      draw(coord[0], coord[1], false)
-    });
+		svg.on('mousedown', function mouseDown() {
+			drawing = true
+			var [x, y] = d3.mouse(this)
+			draw(x, y, false)
+		})
 
-    svg.on('mousemove', function (){
-      if (!drawing){
-        return;
-      }
-      const coord = d3.mouse(this);
-      draw(coord[0], coord[1], true);
-    });
-  };
+		svg.on('mousemove', function mouseMove() {
+			if (drawing) {
+				var [x, y] = d3.mouse(this)
+				draw(x, y, true)
+			}
+			return
+		})
+	}
 
-  document.querySelector('#erase').onclick = () =>{
-    for (var i = 0; i < points.length; i++) {
-     points[i].remove();
-    }
-    for (var i = 0; i < lines.length; i++) {
-     lines[i].remove();
-    }
-    points = [];
-    lines = [];
-  };
+	document.querySelector('#erase').onclick = function onClick() {
+		points.forEach(remove)
+		lines.forEach(remove)
+		points = []
+		lines = []
 
-  function draw(x, y, connect){
-    const color = document.querySelector('#color').value;
-    const thickness = parseInt(document.querySelector('#thickness').value);
+		function remove(val) {
+			val.remove()
+		}
+	}
 
-    if(connect){
-      const last = points[points.length - 1];
+	function draw(x, y, connect) {
+		var color = document.querySelector('#color').value
+		var thickness = Number(document.querySelector('#thickness').value)
 
-      const line = svg.append('line')
-                      .attr('x1', last.attr('cx'))
-                      .attr('y1', last.attr('cy'))
-                      .attr('x2', x)
-                      .attr('y2', y)
-                      .attr('stroke-width', thickness*2)
-                      .attr('stroke', color);
+		if (connect) {
+			var last = points[points.length - 1]
 
-      lines.push(line);
-    }
-    const point = svg.append('circle')
-                      .attr('cx', x)
-                      .attr('cy', y)
-                      .attr('r', thickness)
-                      .style('fill', color);
-    points.push(point);
-  };
-  render();
-});
+			var line = svg
+				.append('line')
+				.attr('x1', last.attr('cx'))
+				.attr('y1', last.attr('cy'))
+				.attr('x2', x)
+				.attr('y2', y)
+				.attr('stroke-width', thickness * 2)
+				.attr('stroke', color)
+
+			lines.push(line)
+		}
+		var point = svg
+			.append('circle')
+			.attr('cx', x)
+			.attr('cy', y)
+			.attr('r', thickness)
+			.style('fill', color)
+		points.push(point)
+	}
+	render()
+})
